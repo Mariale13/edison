@@ -27,7 +27,7 @@ main()
     spi = new mraa::Spi(5);
 
     uint8_t reg = WHO_AM_I_REG;
-    uint8_t rxBuf[2];
+    uint8_t rxBuf[2] = {0 , 0};
     uint8_t* recv;
     
     while (running == 0) {
