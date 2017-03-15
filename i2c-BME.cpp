@@ -43,12 +43,11 @@ void sig_handler(int signo)
 int main()
 {
     float direction = 0;
-    int16_t x = 0, y = 0, z = 0;
     uint8_t rx_tx_buf[MAX_BUFFER_LENGTH];
 
     //! [Interesting]
     mraa::I2c* i2c;
-    i2c = new mraa::I2c(6);
+    i2c = new mraa::I2c(1);
 
     signal(SIGINT, sig_handler);
 
@@ -60,7 +59,7 @@ int main()
         i2c->read(rx_tx_buf, 1);
         
         printf("Who Am I Reg = %d", rx_tx_buf[0]);
-        sleep(1);
+        //sleep(1);
     }
     delete i2c;
 
