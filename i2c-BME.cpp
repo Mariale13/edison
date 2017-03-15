@@ -34,7 +34,7 @@ int running = 0;
 
 void sig_handler(int signo)
 {
-    if (signo == SIGINT)
+    if (signo == SIGINT){
         printf("closing nicely\n");
         running = -1;
     }
