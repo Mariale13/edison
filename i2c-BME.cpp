@@ -59,7 +59,7 @@ int main()
         i2c->address(BME280_I2C_ADDR);
         i2c->read(rx_tx_buf, 1);
         
-        printf("Who Am I Reg = %d", rx_tx_buf[0]);
+        printf("\nWho Am I Reg = %d", rx_tx_buf[0]);
         //sleep(1);
     }
     delete i2c;
