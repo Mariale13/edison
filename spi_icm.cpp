@@ -32,7 +32,7 @@ main()
     
     while (running == 0) {
         
-		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
+		if (spi->transfer(&reg, rxBuf, 1) == mraa::SUCCESS) {
                 printf("Writing - ");
                 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
         }            
