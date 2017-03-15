@@ -7,6 +7,7 @@
 #define MAX_BUFFER_LENGTH 6
 // #define HMC5883L_I2C_ADDR 0x1E
 #define BME280_I2C_ADDR 0x76
+#define BME_WHOAMI_REG  0xD0
 
 // mode register
 #define HMC5883L_MODE_REG 0x02
