@@ -4,6 +4,7 @@
 
 #include "mraa.hpp"
 #define WHO_AM_I_REG 0xF5 		// including the bit for reading
+#define fSCLK 1000000  
 
 int running = 0;
 
@@ -25,6 +26,7 @@ main()
     mraa::Spi* spi;
 
     spi = new mraa::Spi(5);
+    spi->frequency(fSCLK );
 
     uint8_t reg = WHO_AM_I_REG;
     uint8_t rxBuf[2] = {0 , 0};
@@ -32,7 +34,7 @@ main()
     
     while (running == 0) {
         
-		if (spi->transfer(&reg, rxBuf, 1) == mraa::SUCCESS) {
+		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
                 printf("Writing - ");
                 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
         }            
