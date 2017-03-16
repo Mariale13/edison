@@ -4,7 +4,7 @@
 
 #include "mraa.hpp"
 #define WHO_AM_I_REG 0xF5 		// including the bit for reading
-#define fSCLK 1000000  
+#define fSCLK 4000000  
 
 int running = 0;
 int i=0;
@@ -14,7 +14,7 @@ void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("OK= %d ; Total Lost %d\n", j, i);
+        printf("\nOK= %d ; Total Lost %d\n", j, i);
         printf("closing spi nicely\n");
         running = -1;
     }
