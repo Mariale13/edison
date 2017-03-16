@@ -4,17 +4,17 @@
 
 #include "mraa.hpp"
 #define WHO_AM_I_REG 0xF5 		// including the bit for reading
-#define fSCLK 4000000  
+#define fSCLK 400000  
 
 int running = 0;
 int i=0;
-int j = 0;
+int j, error= 0;
 
 void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("\nOK= %d ; Total Lost %d\n", j, i);
+        printf("\n OK= %d \n error = %d \n Total Lost %d\n", j, error, i);
         printf("closing spi nicely\n");
         running = -1;
     }
@@ -36,22 +36,22 @@ main()
     uint8_t* recv;
 
     
-    while (running == 0) {
-        
+    while (running == 0) {        
 		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
-                //printf("Writing - ");
-                if(rxBuf[1] !=0){
-	                j++;
-                	//printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
-                }else {
-                	printf("Lost\n");
-                	i++;
-                }
-        }           
-        rxBuf[1] = 0; 
+		    //printf("Writing - ");
+		    if(rxBuf[1] !=0){  
+			     j++;
+		       	//printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
+		    }else{
+		       	printf("Lost\n");
+		       	i++;
+		    }           
+		    rxBuf[1] = 0; 
+		}else {
+			error++;
+		}
     }
     delete spi;
     //! [Interesting]
-
     return mraa::SUCCESS;
 }
