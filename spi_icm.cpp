@@ -8,12 +8,13 @@
 
 int running = 0;
 int i=0;
+int j = 0;
 
 void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("Total Lost %d\n", i);
+        printf("OK= %d ; Total Lost %d\n", j, i);
         printf("closing spi nicely\n");
         running = -1;
     }
@@ -40,6 +41,7 @@ main()
 		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
                 //printf("Writing - ");
                 if(rxBuf[1] !=0){
+	                j++;
                 	//printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
                 }else {
                 	printf("Lost\n");
