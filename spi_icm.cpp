@@ -7,11 +7,13 @@
 #define fSCLK 8000000  
 
 int running = 0;
+int i=0;
 
 void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
+        printf("Total Lost %d\n", i);
         printf("closing spi nicely\n");
         running = -1;
     }
@@ -31,13 +33,18 @@ main()
     uint8_t reg = WHO_AM_I_REG;
     uint8_t rxBuf[2] = {0 , 0};
     uint8_t* recv;
+
     
     while (running == 0) {
         
 		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
                 //printf("Writing - ");
-                if(rxBuf[1] !=0)
-                printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
+                if(rxBuf[1] !=0){
+                	//printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
+                }else {
+                	printf("Lost\n");
+                	i++;
+                }
         }           
         rxBuf[1] = 0; 
     }
