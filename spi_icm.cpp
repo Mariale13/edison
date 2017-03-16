@@ -28,7 +28,7 @@ main()
     //! [Interesting]
     mraa::Spi* spi;
 
-    spi = new mraa::Spi(5);
+    spi = new mraa::Spi(5, 0);
     spi->frequency(fSCLK );
 
     uint8_t reg = WHO_AM_I_REG;
