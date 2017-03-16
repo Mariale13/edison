@@ -12,7 +12,7 @@ int j, error= 0;
 
 void
 sig_handler(int signo)
-{root
+{
     if (signo == SIGINT) {
         printf("\n OK= %d \n error = %d \n Total Lost %d\n", j, error, i);
         printf("closing spi nicely\n");
