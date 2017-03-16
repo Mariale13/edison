@@ -36,6 +36,7 @@ main()
         
 		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
                 printf("Writing - ");
+                if(rxBuf[1] !=0)
                 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
         }            
     }
