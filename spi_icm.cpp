@@ -35,10 +35,11 @@ main()
     while (running == 0) {
         
 		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
-                printf("Writing - ");
+                //printf("Writing - ");
                 if(rxBuf[1] !=0)
                 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
-        }            
+        }           
+        rxBuf[1] = 0; 
     }
     delete spi;
     //! [Interesting]
