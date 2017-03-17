@@ -30,7 +30,7 @@ main()
     spi = new mraa::Spi(5);
     //spi->frequency(fSCLK );
     spi->mode(mraa::SPI_MODE3);
-    spi->frequency(1000000);
+    spi->frequency(5000000);
 	//spi->lsbmode(0);
 	//spi->bitPerWord(8);
 
