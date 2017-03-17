@@ -25,6 +25,7 @@ int main(){
    
     mraa::Spi* spi;
     spi = new mraa::Spi(0);
+    spi->frequency(1000000);
     uint8_t data[] = { 0x00, 100 };
     uint8_t rxBuf[2];
     uint8_t* recv;
@@ -38,7 +39,7 @@ int main(){
                 printf("RECIVED-%i-%i\n", recv[0], recv[1]);
                 free(recv);
             }
-            usleep(100000);
+            //usleep(100000);
         }
         for (i = 130; i > 90; i--) {
             data[1] = i;
@@ -46,7 +47,7 @@ int main(){
                 printf("Writing -%i", i);
                 printf("RECIVED-%i-%i\n", rxBuf[0], rxBuf[1]);
             }
-            usleep(100000);
+            //usleep(100000);
         }
     }
     delete spi;
