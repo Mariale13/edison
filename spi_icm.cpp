@@ -29,7 +29,7 @@ main()
 
     spi = new mraa::Spi(5);
     spi->frequency(fSCLK );
-    spi->mode(mraa::SPI_MODE2);
+    spi->mode(mraa::SPI_MODE3);
 	spi->lsbmode(0);
 
     uint8_t txBuf[2] = {WHO_AM_I_REG , 0};
@@ -40,13 +40,13 @@ main()
     while (running == 0) {        
 		if (spi->transfer(txBuf, rxBuf, 2) == mraa::SUCCESS) {
 		    //printf("Writing - ");
-		    if(rxBuf[1] !=0){  
+		  //  if(rxBuf[1] !=0){  
 			     j++;
 		       	 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
-		    }else{
+		 //   }else{
 		       	printf("Lost\n");
 		       	i++;
-		    }           
+		 //   }           
 		    rxBuf[1] = 0; 
 		}else {
 			error++;
