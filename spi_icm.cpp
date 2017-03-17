@@ -4,7 +4,7 @@
 
 #include "mraa.hpp"
 #define WHO_AM_I_REG 0xF5 		// including the bit for reading
-#define fSCLK 6000000  
+#define fSCLK 1000000  
 
 int running = 0;	
 int i=0;
