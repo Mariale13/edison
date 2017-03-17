@@ -26,7 +26,7 @@ int main(){
     mraa::Spi* spi;
     spi = new mraa::Spi(5);
     spi->frequency(1000000);
-    spi->mode(mraa::SPI_MODE3);
+   // spi->mode(mraa::SPI_MODE3);
     uint8_t data[] = { 0x00, 100 };
     uint8_t rxBuf[2];
     uint8_t* recv;
