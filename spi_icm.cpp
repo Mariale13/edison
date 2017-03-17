@@ -4,7 +4,7 @@
 
 #include "mraa.hpp"
 #define WHO_AM_I_REG 0xF5 		// including the bit for reading
-#define fSCLK 1000000  
+#define fSCLK 6000000  
 
 int running = 0;	
 int i=0;
@@ -38,7 +38,7 @@ main()
 
     
     while (running == 0) {        
-		if (spi->transfer(txBuf, rxBuf, 1) == mraa::SUCCESS) {
+		if (spi->transfer(txBuf, rxBuf, 2) == mraa::SUCCESS) {
 		    //printf("Writing - ");
 		    if(rxBuf[1] !=0){  
 			     j++;
