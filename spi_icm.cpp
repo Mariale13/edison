@@ -46,7 +46,7 @@ main()
 		    }else{
 		       	printf("Lost\n");
 		       	i++;
-		 //   }           
+		    }           
 		    rxBuf[1] = 0; 
 		}else {
 			error++;
