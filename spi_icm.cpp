@@ -29,16 +29,16 @@ main()
 
     spi = new mraa::Spi(5);
     spi->frequency(fSCLK );
-    spi->mode(mraa::SPI_MODE3);
+    spi->mode(mraa::SPI_MODE2);
 	spi->lsbmode(0);
 
-    uint8_t reg = WHO_AM_I_REG;
+    uint8_t txBuf[2] = {WHO_AM_I_REG , 0};
     uint8_t rxBuf[2] = {0 , 0};
     uint8_t* recv;
 
     
     while (running == 0) {        
-		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
+		if (spi->transfer(txBuf, rxBuf, 2) == mraa::SUCCESS) {
 		    //printf("Writing - ");
 		    if(rxBuf[1] !=0){  
 			     j++;
