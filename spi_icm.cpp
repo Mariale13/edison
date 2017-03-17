@@ -31,7 +31,7 @@ main()
     //spi->frequency(fSCLK );
     spi->mode(mraa::SPI_MODE3);
     spi->frequency(1000000);
-	spi->lsbmode(0);
+	//spi->lsbmode(0);
 	//spi->bitPerWord(8);
 
     uint8_t reg = WHO_AM_I_REG;
