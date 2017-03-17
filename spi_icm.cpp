@@ -42,9 +42,9 @@ main()
     while (running == 0) {        
 		if (spi->transfer(&reg, rxBuf, 2) == mraa::SUCCESS) {
 		    //printf("Writing - ");
-		    if(rxBuf[1] ==0x12){  
+		    if(rxBuf[1] !=0){  
 			     j++;
-		       	//printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
+		       	 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
 		    }else{
 		       	printf("Lost\n");
 		       	i++;
