@@ -25,13 +25,14 @@ int
 main()
 {
     signal(SIGINT, sig_handler);
-//	Spi_Mode mode1 = SPI_MODE3 ;
-    //! [Interesting]
     mraa::Spi* spi;
 
     spi = new mraa::Spi(5);
-    spi->frequency(fSCLK );
+    //spi->frequency(fSCLK );
     spi->mode(mraa::SPI_MODE3);
+    spi->frequency(6250000);
+	spi->lsbmode(0);
+	spi->bitPerWord(8);
 
     uint8_t reg = WHO_AM_I_REG;
     uint8_t rxBuf[2] = {0 , 0};
