@@ -32,7 +32,7 @@ main()
     spi->mode(mraa::SPI_MODE3);
 	//spi->lsbmode(0);
 
-    uint8_t txBuf[1] = {WHO_AM_I_REG };
+    uint8_t txBuf[2] = {WHO_AM_I_REG, 0xFF };
     uint8_t rxBuf[2] = {0 , 0};
     uint8_t* recv;
 
@@ -42,7 +42,7 @@ main()
 		    //printf("Writing - ");
 		    if(rxBuf[1] !=0){  
 			     j++;
-		       	 printf("RECIVED-%i-0x%x\n", rxBuf[0], rxBuf[1]);
+		       	 printf("RECIVED-0x%x-0x%x\n", rxBuf[0], rxBuf[1]);
 		    }else{
 		       	printf("Lost\n");
 		       	i++;
