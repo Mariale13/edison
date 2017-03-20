@@ -31,7 +31,7 @@ int main(){
     spi->mode(mraa::SPI_MODE3);
 	//spi->lsbmode(0);
 
-    uint8_t txBuf[2] = {WHO_AM_I_REG, 0xFF };
+    uint8_t txBuf[4] = {0, 0, 0,0 };
     uint8_t rxBuf[4] = {0 , 0 , 0 , 0};
     uint8_t* recv;
 
