@@ -38,7 +38,7 @@ int main(){
     
     while (running == 0) {  
     	prevTime = time;      
-		if (spi->transfer(txBuf, rxBuf, 4) == mraa::SUCCESS) {
+		if (spi->transfer(NULL, rxBuf, 4) == mraa::SUCCESS) {
 //		    time = (rxBuf[0]<<24) | (rxBuf[1]<<16) | (rxBuf[2]<<8) |rxBuf[3] ;
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
 		    if(time !=0){  
