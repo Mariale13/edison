@@ -52,6 +52,7 @@ int main(){
 		}else {
 			error++;
 		}
+		sleep(1);
     }
     delete spi;
     //! [Interesting]
