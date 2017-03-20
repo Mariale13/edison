@@ -39,14 +39,15 @@ int main(){
     while (running == 0) {  
     	prevTime = time;      
 		if (spi->transfer(txBuf, rxBuf, 4) == mraa::SUCCESS) {
-		    time = (rxBuf[0]<<24) | (rxBuf[1]<<16) | (rxBuf[2]<<8) |rxBuf[3] ;
+//		    time = (rxBuf[0]<<24) | (rxBuf[1]<<16) | (rxBuf[2]<<8) |rxBuf[3] ;
+  		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
 		    if(time !=0){  
 			     j++;
 		       	 printf("Time: %10d;  DifTime: %d\n", time, time-prevTime);
-		    }/*else{
-		       	printf("Lost\n");
+		    }else{
+		       	//printf("Lost\n");
 		       	i++;
-		    }*/           
+		    }           
 
 		}else {
 			error++;
