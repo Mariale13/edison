@@ -22,7 +22,7 @@ sig_handler(int signo)
 }
 
 int main(){
-	int time = 0; 
+	int time, prevTime = 0; 
     signal(SIGINT, sig_handler);
     mraa::Spi* spi;
 
@@ -36,16 +36,17 @@ int main(){
     uint8_t* recv;
 
     
-    while (running == 0) {        
+    while (running == 0) {  
+    	prevTime = time;      
 		if (spi->transfer(txBuf, rxBuf, 4) == mraa::SUCCESS) {
-		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
+		    time = (rxBuf[0]<<24) | (rxBuf[1]<<16) | (rxBuf[2]<<8) |rxBuf[3] ;
 		    if(time !=0){  
 			     j++;
-		       	 printf("Time-%d\n", time);
-		    }else{
+		       	 printf("Time: %10d;  DifTime: %d\n", time, time-prevTime);
+		    }/*else{
 		       	printf("Lost\n");
 		       	i++;
-		    }           
+		    }*/           
 
 		}else {
 			error++;
