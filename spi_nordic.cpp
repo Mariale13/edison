@@ -49,8 +49,8 @@ int main(){
         	currentDiff = time-prevTime;
 		    if(time !=0){  
 			     j++;
-   		       	 fprintf(fileWrite,"Raw 0x%.2x%.2x%.2x%.2x",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-		       	 fprintf(fileWrite,"Time: %10d;  DifTime: %d\n", time, currentDiff);
+   		       	 fprintf(fileWrite,"Raw 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+		       	 fprintf(fileWrite," Time: %10d;  DifTime: %d\n", time, currentDiff);
 
 		    }else{
 		       	i++;
