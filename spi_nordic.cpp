@@ -22,6 +22,13 @@ sig_handler(int signo)
 }
 
 int main(){
+	FILE * fileWrite;
+	fileWrite=fopen("DataIntCol.txt","w");	
+	if(!fileWrite) {
+		printf("File not Opened");
+		return 0;
+	}	
+	
 	int time, prevTime, currentDiff = 0; 
     signal(SIGINT, sig_handler);
     mraa::Spi* spi;
@@ -42,7 +49,7 @@ int main(){
         	currentDiff = time-prevTime;
 		    if(time !=0){  
 			     j++;
-		       	 printf("Time: %10d;  DifTime: %d\n", time, currentDiff);
+		       	 fprintf(fileWrite,"Time: %10d;  DifTime: %d\n", time, currentDiff);
 		    }else{
 		       	i++;
 		    }           
@@ -55,6 +62,9 @@ int main(){
 		//sleep(1);
     }
     delete spi;
+    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
+    fprintf(fileWrite,"closing spi nicely\n");    
+   	fclose(fileWrite);
     //! [Interesting]
     return mraa::SUCCESS;
 }
