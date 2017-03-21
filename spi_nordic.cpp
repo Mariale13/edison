@@ -7,22 +7,22 @@
 #define fSCLK 1000000  
 
 int running = 0;	
-int i=0;
-int j, error= 0;
+int i,j=0;
+int maxDif, error= 0;
 
 
 void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("\n OK= %d \n error = %d \n Total Lost %d\n", j, error, i);
+        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
         printf("closing spi nicely\n");
         running = -1;
     }
 }
 
 int main(){
-	int time, prevTime, currentDiff, maxDif = 0; 
+	int time, prevTime, currentDiff = 0; 
     signal(SIGINT, sig_handler);
     mraa::Spi* spi;
 
@@ -31,17 +31,15 @@ int main(){
     spi->mode(mraa::SPI_MODE3);
 	//spi->lsbmode(0);
 
-    uint8_t txBuf[4] = {0, 0, 0,0 };
-    uint8_t rxBuf[4] = {0 , 0 , 0 , 0};
+    uint8_t txBuf[4] = {0,0,0,0};
+    uint8_t rxBuf[4] = {0,0,0,0};
     uint8_t* recv;
-
-    
+        
     while (running == 0) {  
     	prevTime = time;      
-    	currentDiff = time-prevTime;
 		if (spi->transfer(NULL, rxBuf, 4) == mraa::SUCCESS) {
-//		    time = (rxBuf[0]<<24) | (rxBuf[1]<<16) | (rxBuf[2]<<8) |rxBuf[3] ;
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
+        	currentDiff = time-prevTime;
 		    if(time !=0){  
 			     j++;
 		       	 printf("Time: %10d;  DifTime: %d\n", time, currentDiff);
