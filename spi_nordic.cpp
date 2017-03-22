@@ -45,8 +45,10 @@ int main(){
         
     while (running == 0) {  
     	prevTime = time;      
-		if (spi->transfer(NULL, rxBuf,5) == mraa::SUCCESS) {
-//		    spi->transfer(NULL, rxBuf, 4);
+		if (spi->transfer(NULL, rxBuf,1) == mraa::SUCCESS) {
+		    spi->transfer(NULL, rxBuf+1, 1);
+		    spi->transfer(NULL, rxBuf+2, 1);
+		    spi->transfer(NULL, rxBuf+3, 1);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
 		    if(time !=0){  
