@@ -45,6 +45,7 @@ int main(){
     while (running == 0) {  
     	prevTime = time;      
 		if (spi->transfer(NULL, rxBuf, 4) == mraa::SUCCESS) {
+		    spi->transfer(NULL, rxBuf, 4);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
 		    if(time !=0){  
