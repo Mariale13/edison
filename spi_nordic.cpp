@@ -36,7 +36,7 @@ int main(){
     spi = new mraa::Spi(5);
     spi->frequency(fSCLK );
     spi->mode(mraa::SPI_MODE3);
-	//spi->lsbmode(0);
+    spi->lsbmode(0);
 
     uint8_t txBuf[4] = {0,0,0,0};
     uint8_t rxBuf[4] = {0,0,0,0};
@@ -61,7 +61,7 @@ int main(){
 		}else {
 			error++;
 		}
-		//sleep(1);
+		sleep(1);
     }
     delete spi;
     fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
