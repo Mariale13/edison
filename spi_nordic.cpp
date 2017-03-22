@@ -37,6 +37,7 @@ int main(){
     spi->frequency(fSCLK );
     spi->mode(mraa::SPI_MODE3);
     spi->lsbmode(0);
+    spi->bitPerWord(8);
 
     uint8_t txBuf[4] = {0,0,0,0};
     uint8_t rxBuf[4] = {0,0,0,0};
@@ -44,8 +45,8 @@ int main(){
         
     while (running == 0) {  
     	prevTime = time;      
-		if (spi->transfer(NULL, rxBuf, 4) == mraa::SUCCESS) {
-		    spi->transfer(NULL, rxBuf, 4);
+		if (spi->transfer(NULL, rxBuf,5) == mraa::SUCCESS) {
+//		    spi->transfer(NULL, rxBuf, 4);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
 		    if(time !=0){  
@@ -62,7 +63,7 @@ int main(){
 		}else {
 			error++;
 		}
-		sleep(1);
+	//	sleep(1);
     }
     delete spi;
     fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
