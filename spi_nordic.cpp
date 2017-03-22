@@ -27,7 +27,19 @@ int main(){
 	if(!fileWrite) {
 		printf("File not Opened");
 		return 0;
-	}	
+	}
+	
+	/* GPIO  */
+    mraa::Gpio* gpio = new mraa::Gpio(19);
+    if (gpio == NULL) {
+        return mraa::ERROR_UNSPECIFIED;
+    }
+    mraa::Result response = gpio->dir(mraa::DIR_OUT);
+    if (response != mraa::SUCCESS) {
+        mraa::printError(response);
+        return 1;
+    }
+
 	
 	int time, prevTime, currentDiff = 0; 
     signal(SIGINT, sig_handler);
@@ -44,11 +56,10 @@ int main(){
     uint8_t* recv;
         
     while (running == 0) {  
-    	prevTime = time;      
-		if (spi->transfer(NULL, rxBuf,1) == mraa::SUCCESS) {
-		    spi->transfer(NULL, rxBuf+1, 1);
-		    spi->transfer(NULL, rxBuf+2, 1);
-		    spi->transfer(NULL, rxBuf+3, 1);
+    	prevTime = time;  
+		gpio->write(1);
+		if (spi->transfer(NULL, rxBuf,4) == mraa::SUCCESS) {
+	    	gpio->write(0);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
 		    if(time !=0){  
@@ -68,6 +79,7 @@ int main(){
 	//	sleep(1);
     }
     delete spi;
+    delete gpio;
     fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
     fprintf(fileWrite,"closing spi nicely\n");    
    	fclose(fileWrite);
