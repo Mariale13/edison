@@ -4,7 +4,7 @@
 
 #include "mraa.hpp"
 #define WHO_AM_I_REG 0xF5 		// including the bit for reading
-#define fSCLK 2000000  
+#define fSCLK 8000000  
 
 int running = 0;	
 int i,j=0;
@@ -57,9 +57,9 @@ int main(){
         
     while (running == 0) {  
     	prevTime = time;  
-		gpio->write(1);
+		gpio->write(0);
 		if (spi->transfer(NULL, rxBuf,4) == mraa::SUCCESS) {
-	    	gpio->write(0);
+	    	gpio->write(1);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
 		    if(time !=0){  
