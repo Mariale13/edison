@@ -73,7 +73,7 @@ int main(){
 		    }           
 		    if (currentDiff> maxDif && firstFlag<0){
 		    	maxDif = currentDiff;
-	    	}else if(currentDiff < 0){
+	    	}else if(currentDiff < 0 && firstFlag <0){
 		    	restartCount++;
 	    		fprintf(fileWrite,"RESTART!!!"); 
 	    	}
