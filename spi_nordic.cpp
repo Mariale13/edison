@@ -23,6 +23,8 @@ sig_handler(int signo)
 
 int main(){
 	FILE * fileWrite;
+	int firstFlag = 2;
+	int restartCount = 0; 
 	fileWrite=fopen("DataIntCol.txt","w");	
 	if(!fileWrite) {
 		printf("File not Opened");
@@ -64,23 +66,28 @@ int main(){
         	currentDiff = time-prevTime;
 		    if(time !=0){  
 			     j++;
-   		       	 fprintf(fileWrite,"Raw 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-		       	 fprintf(fileWrite," Time: %10d;  DifTime: %d\n", time, currentDiff);
+   		       	 fprintf(fileWrite," \nRaw 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+		       	 fprintf(fileWrite," Time: %10d;  DifTime: %d	", time, currentDiff);
 
 		    }else{
 		       	i++;
 		    }           
-		    if (currentDiff> maxDif)
+		    if (currentDiff> maxDif && firstFlag>0){
 		    	maxDif = currentDiff;
+	    	}else if(currentDiff < 0){
+		    	restartCount++;
+	    		printf("RESTART!!!"); 
+	    	}
 
 		}else {
 			error++;
 		}
      // 	sleep(1);
+     firstFlag--;
     }
     delete spi;
     delete gpio;
-    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
+    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr ReStarts %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"closing spi nicely\n");    
    	fclose(fileWrite);
     //! [Interesting]
