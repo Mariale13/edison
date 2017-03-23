@@ -23,7 +23,7 @@ sig_handler(int signo)
 
 int main(){
 	FILE * fileWrite;
-	int firstFlag = 2;
+	int firstFlag = 20;
 	fileWrite=fopen("DataIntCol.txt","w");	
 	if(!fileWrite) {
 		printf("File not Opened");
@@ -71,7 +71,7 @@ int main(){
 		    }else{
 		       	i++;
 		    }           
-		    if (currentDiff> maxDif && firstFlag>0){
+		    if (currentDiff> maxDif && firstFlag<0){
 		    	maxDif = currentDiff;
 	    	}else if(currentDiff < 0){
 		    	restartCount++;
