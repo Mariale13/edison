@@ -61,14 +61,14 @@ int main(){
 		memset(rxBuf,0,14);
 		if (spi->transfer(NULL, rxBuf,14) == mraa::SUCCESS) {
 	    	gpio->write(1);
-  		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
-  		    time0 = (rxBuf[13]<<24) | (rxBuf[12]<<16) | (rxBuf[11]<<8) |rxBuf[10] ;
+  		    time0 = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
+  		    time = (rxBuf[13]<<24) | (rxBuf[12]<<16) | (rxBuf[11]<<8) |rxBuf[10] ;
         	currentDiff = time-prevTime;
 		    if(time !=0){  
 			     j++;
-   		       	 fprintf(fileWrite," \nRaw0 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-   		       	 fprintf(fileWrite," Raw1 0x%.2x%.2x%.2x%.2x ",rxBuf[13],rxBuf[12],rxBuf[11],rxBuf[10]);
-		       	 fprintf(fileWrite," Time: %10d; Time: %10d; DifTime: %d	", time, time0, currentDiff);
+   		  	 fprintf(fileWrite,"\nRaw0 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+   		       	 fprintf(fileWrite,"\nRaw1 0x%.2x%.2x%.2x%.2x ",rxBuf[13],rxBuf[12],rxBuf[11],rxBuf[10]);
+		       	 fprintf(fileWrite," Time: %d; Time0: %d; DifTime: %d	", time, time0, currentDiff);
 
 		    }else{
 		       	i++;
