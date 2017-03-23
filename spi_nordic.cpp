@@ -53,13 +53,13 @@ int main(){
     spi->bitPerWord(8);
 
 //  uint8_t txBuf[4] = {0,0,0,0};
-    uint8_t rxBuf[54];
+    uint8_t rxBuf[14];
     uint8_t* recv;
         
     while (running == 0) {  
     	prevTime = time;  
 		gpio->write(0);
-		if (spi->transfer(NULL, rxBuf,54) == mraa::SUCCESS) {
+		if (spi->transfer(NULL, rxBuf,14) == mraa::SUCCESS) {
 	    	gpio->write(1);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
