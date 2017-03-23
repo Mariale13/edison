@@ -15,7 +15,7 @@ void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr ReStarts %d\n", maxDif, j, error, i, restartCount);
+        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i, restartCount);
         printf("closing spi nicely\n");
         running = -1;
     }
@@ -75,7 +75,7 @@ int main(){
 		    	maxDif = currentDiff;
 	    	}else if(currentDiff < 0 && firstFlag <0){
 		    	restartCount++;
-	    		fprintf(fileWrite,"RESTART!!!"); 
+	    		fprintf(fileWrite,"Data Lost!!"); 
 			firstFlag = 1;
 	    	}
 
@@ -87,7 +87,8 @@ int main(){
     }
     delete spi;
     delete gpio;
-    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr ReStarts %d\n", maxDif, j, error, i,restartCount);
+    fseek (fileWrite, 0, SEEK_CUR);     
+    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"closing spi nicely\n");    
    	fclose(fileWrite);
     //! [Interesting]
