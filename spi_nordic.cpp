@@ -76,7 +76,7 @@ int main(){
 		}else {
 			error++;
 		}
-	//	sleep(1);
+     // 	sleep(1);
     }
     delete spi;
     delete gpio;
