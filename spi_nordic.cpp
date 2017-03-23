@@ -71,11 +71,12 @@ int main(){
 		    }else{
 		       	i++;
 		    }           
-		    if (currentDiff> maxDif && firstFlag<0){
+		    if (currentDiff> maxDif && firstFlag<0 ){
 		    	maxDif = currentDiff;
 	    	}else if(currentDiff < 0 && firstFlag <0){
 		    	restartCount++;
 	    		fprintf(fileWrite,"RESTART!!!"); 
+			firstFlag = 1;
 	    	}
 
 		}else {
