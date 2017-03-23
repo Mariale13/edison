@@ -82,7 +82,7 @@ int main(){
 		}else {
 			error++;
 		}
-	  memset(rxBuf,0,14);	
+	  memset(rxBuf,1,14);	
     	// 	sleep(1);
       firstFlag--;
     }
