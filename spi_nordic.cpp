@@ -8,7 +8,7 @@
 
 int running = 0;	
 int i,j=0;
-int maxDif, error= 0;
+int maxDif, error,restartCount = 0;
 
 
 void
@@ -24,7 +24,6 @@ sig_handler(int signo)
 int main(){
 	FILE * fileWrite;
 	int firstFlag = 2;
-	int restartCount = 0; 
 	fileWrite=fopen("DataIntCol.txt","w");	
 	if(!fileWrite) {
 		printf("File not Opened");
