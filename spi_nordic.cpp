@@ -15,7 +15,7 @@ void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n", maxDif, j, error, i);
+        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr ReStarts %d\n", maxDif, j, error, i, restartCount);
         printf("closing spi nicely\n");
         running = -1;
     }
@@ -76,7 +76,7 @@ int main(){
 		    	maxDif = currentDiff;
 	    	}else if(currentDiff < 0){
 		    	restartCount++;
-	    		printf("RESTART!!!"); 
+	    		fprintf(fileWrite,"RESTART!!!"); 
 	    	}
 
 		}else {
