@@ -52,14 +52,14 @@ int main(){
     spi->lsbmode(0);
     spi->bitPerWord(8);
 
-    uint8_t txBuf[4] = {0,0,0,0};
-    uint8_t rxBuf[4] = {0,0,0,0};
+//  uint8_t txBuf[4] = {0,0,0,0};
+    uint8_t rxBuf[50];
     uint8_t* recv;
         
     while (running == 0) {  
     	prevTime = time;  
 		gpio->write(0);
-		if (spi->transfer(NULL, rxBuf,4) == mraa::SUCCESS) {
+		if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
 	    	gpio->write(1);
   		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
         	currentDiff = time-prevTime;
@@ -87,7 +87,7 @@ int main(){
     }
     delete spi;
     delete gpio;
-    fseek (fileWrite, 0, SEEK_CUR);     
+    fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"closing spi nicely\n");    
    	fclose(fileWrite);
