@@ -44,7 +44,7 @@ int main(){
     }
 
 	
-	int time, time0, prevTime, currentDiff = 0; 
+	int timeNode1, timeNode2, prevTime, timeNodesDrift,  currentDiff, maxNodeDrift = 0; 
     signal(SIGINT, sig_handler);
     mraa::Spi* spi;
 
@@ -59,27 +59,32 @@ int main(){
     uint8_t* recv;
         
     while (running == 0) {  
-    	prevTime = time;  
+    	prevTime = timeNode1;  
 		gpio->write(0);
-		if (spi->transfer(txBuf, rxBuf,54) == mraa::SUCCESS) {
+		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
 	    	gpio->write(1);
-  		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
-        	currentDiff = time-prevTime;
+  		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
+   		    timeNode2 = (rxBuf[9]<<24) | (rxBuf[8]<<16) | (rxBuf[7]<<8) |rxBuf[6] ;
+        	currentDiff = timeNode1-prevTime;
+        	timeNodesDrift = timeNode2 - timeNode1;
 		    if(time !=0){  
 			     j++;
-   		  	     fprintf(fileWrite,"\nRaw 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-  		  	     fprintf(fileWrite,"RawCheck TxRx 0x%.2x%.2x%.2x%.2x ",rxBuf[7],rxBuf[6],rxBuf[5],rxBuf[4]);
-   		         fprintf(fileWrite,"CheckBytes 0x%.2x%.2x ",rxBuf[53],rxBuf[52]);
-		       	 fprintf(fileWrite," Time: %d; DifTime: %d	", time,  currentDiff);
+   		  	     fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+   		  	     fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
+		       	 fprintf(fileWrite,"\nTimeNode1: %d;TimeNode2: %d; Node Time Diff: %d; DifBetTX: %d	",timeNode1,timeNode2, timeNodesDrift,  currentDiff);
 		    }else{
 		       	i++;
-		    }           
+		    } 
+		    /* Difference between Transmissions */           
 		    if (currentDiff> maxDif && firstFlag<0 ){
 		    	maxDif = currentDiff;
 	    	}else if(currentDiff < 0 && firstFlag <0){
 		    	restartCount++;
 	    		fprintf(fileWrite,"Data Lost!!"); 
-			firstFlag = 1;
+			    firstFlag = 1;
+	    	}
+	    	if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
+	    		maxNodeDrift = timeNodesDrift; 
 	    	}
 
 		}else {
@@ -92,9 +97,10 @@ int main(){
     delete spi;
     delete gpio;
     fseek (fileWrite, 0, SEEK_SET);     
-    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
+    fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
+    fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
     fprintf(fileWrite,"closing spi nicely\n");    
-   	fclose(fileWrite);
+    fclose(fileWrite);
     //! [Interesting]
     return mraa::SUCCESS;
 }
