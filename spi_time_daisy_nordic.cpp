@@ -11,15 +11,17 @@
 int running = 0;	
 int i,j=0;
 int maxDif, error,restartCount = 0;
+int timeNode1, timeNode2, prevTime, timeNodesDrift,  currentDiff, maxNodeDrift = 0; 
 
 
 void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i, restartCount);
-        printf("closing spi nicely\n");
-        running = -1;
+		printf("\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
+		printf("\n Max Drifting between Noded = %d", maxNodeDrift); 
+	    printf("\nClosing spi nicely\n");    		     
+		running = -1;
     }
 }
 
@@ -43,8 +45,6 @@ int main(){
         return 1;
     }
 
-	
-	int timeNode1, timeNode2, prevTime, timeNodesDrift,  currentDiff, maxNodeDrift = 0; 
     signal(SIGINT, sig_handler);
     mraa::Spi* spi;
 
@@ -66,12 +66,12 @@ int main(){
   		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
    		    timeNode2 = (rxBuf[9]<<24) | (rxBuf[8]<<16) | (rxBuf[7]<<8) |rxBuf[6] ;
         	currentDiff = timeNode1-prevTime;
-        	timeNodesDrift = timeNode2 - timeNode1;
+        	timeNodesDrift = abs(timeNode2 - timeNode1);
 		    if(time !=0){  
 			     j++;
    		  	     fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
    		  	     fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
-		       	 fprintf(fileWrite,"\nTimeNode1: %d;TimeNode2: %d; Node Time Diff: %d; DifBetTX: %d	",timeNode1,timeNode2, timeNodesDrift,  currentDiff);
+		       	 fprintf(fileWrite,"\nTimeNode1: %d; TimeNode2: %d;\nNode Time Diff: %d; DifBetTX: %d	",timeNode1,timeNode2, timeNodesDrift,  currentDiff);
 		    }else{
 		       	i++;
 		    } 
@@ -99,7 +99,7 @@ int main(){
     fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
-    fprintf(fileWrite,"closing spi nicely\n");    
+    fprintf(fileWrite,"\nClosing spi nicely\n");    
     fclose(fileWrite);
     //! [Interesting]
     return mraa::SUCCESS;
