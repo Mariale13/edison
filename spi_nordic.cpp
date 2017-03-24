@@ -66,6 +66,7 @@ int main(){
 		    if(time !=0){  
 			     j++;
    		  	     fprintf(fileWrite,"\nRaw 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+  		  	     fprintf(fileWrite,"\nRawCheck TxRx 0x%.2x%.2x%.2x%.2x ",rxBuf[7],rxBuf[6],rxBuf[5],rxBuf[4]);
    		         fprintf(fileWrite,"CheckBytes 0x%.2x%.2x ",rxBuf[53],rxBuf[52]);
 		       	 fprintf(fileWrite," Time: %d; DifTime: %d	", time,  currentDiff);
 		    }else{
