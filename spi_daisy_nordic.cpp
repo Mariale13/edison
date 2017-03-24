@@ -8,14 +8,14 @@
 
 int running = 0;	
 int i,j=0;
-int maxDif, error,restartCount = 0;
+int error = 0;
 
 
 void
 sig_handler(int signo)
 {
     if (signo == SIGINT) {
-        printf("\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i, restartCount);
+        printf("\n OK= %d \n error = %d \n Total Lost %d\n ", j, error, i);
         printf("closing spi nicely\n");
         running = -1;
     }
@@ -52,34 +52,18 @@ int main(){
     spi->lsbmode(0);
     spi->bitPerWord(8);
 
-    uint8_t rxBuf[54];
-    uint8_t txBuf[4] = {1,2,3,4};
+    uint8_t rxBuf[10];
     uint8_t* recv;
         
     while (running == 0) {  
     	prevTime = time;  
 		gpio->write(0);
-		if (spi->transfer(txBuf, rxBuf,54) == mraa::SUCCESS) {
+		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
 	    	gpio->write(1);
-  		    time = (rxBuf[3]<<24) | (rxBuf[2]<<16) | (rxBuf[1]<<8) |rxBuf[0] ;
-        	currentDiff = time-prevTime;
-		    if(time !=0){  
-			     j++;
-   		  	     fprintf(fileWrite,"\nRaw 0x%.2x%.2x%.2x%.2x ",rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-  		  	     fprintf(fileWrite,"RawCheck TxRx 0x%.2x%.2x%.2x%.2x ",rxBuf[7],rxBuf[6],rxBuf[5],rxBuf[4]);
-   		         fprintf(fileWrite,"CheckBytes 0x%.2x%.2x ",rxBuf[53],rxBuf[52]);
-		       	 fprintf(fileWrite," Time: %d; DifTime: %d	", time,  currentDiff);
-		    }else{
-		       	i++;
-		    }           
-		    if (currentDiff> maxDif && firstFlag<0 ){
-		    	maxDif = currentDiff;
-	    	}else if(currentDiff < 0 && firstFlag <0){
-		    	restartCount++;
-	    		fprintf(fileWrite,"Data Lost!!"); 
-			firstFlag = 1;
-	    	}
-
+			fprintf(fileWrite,"\nRaw: ");
+			for (int m=0; m<10;m++){
+   		  	     fprintf(fileWrite,"0x%.2x ",rxBuf[m]);
+   		  	}
 		}else {
 			error++;
 		}
@@ -90,7 +74,7 @@ int main(){
     delete spi;
     delete gpio;
     fseek (fileWrite, 0, SEEK_SET);     
-    fprintf(fileWrite,"\n MaxDifference = %d \n OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
+    fprintf(fileWrite,"\n OK= %d \n error = %d \n Total Lost %d\n", j, error, i);
     fprintf(fileWrite,"closing spi nicely\n");    
    	fclose(fileWrite);
     //! [Interesting]
