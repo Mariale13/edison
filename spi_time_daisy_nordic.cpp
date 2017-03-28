@@ -11,7 +11,7 @@
 int running = 0;	
 int i,j=0;
 int maxDif, error,restartCount = 0;
-int timeNode1, timeNode2, prevTime, timeNodesDrift,  currentDiff, maxNodeDrift = 0; 
+int timeNode1, timeNode2, prevTime1, prevTime2, timeNodesDrift,  currentDiff1, currentDiff2, maxNodeDrift = 0; 
 
 
 void
@@ -59,26 +59,28 @@ int main(){
     uint8_t* recv;
         
     while (running == 0) {  
-    	prevTime = timeNode1;  
+    	prevTime1 = timeNode1;  
+    	prevTime2 = timeNode2;  
 		gpio->write(0);
 		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
 	    	gpio->write(1);
   		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
    		    timeNode2 = (rxBuf[9]<<24) | (rxBuf[8]<<16) | (rxBuf[7]<<8) |rxBuf[6] ;
-        	currentDiff = timeNode1-prevTime;
+        	currentDiff1 = timeNode1-prevTime1;
+        	currentDiff2 = timeNode2-prevTime2;
         	timeNodesDrift = abs(timeNode2 - timeNode1);
 		    if(time !=0){  
 			     j++;
    		  	     fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
    		  	     fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
-		       	 fprintf(fileWrite,"\nTimeNode1: %d; TimeNode2: %d;\nNode Time Diff: %d; DifBetTX: %d	",timeNode1,timeNode2, timeNodesDrift,  currentDiff);
+		       	 fprintf(fileWrite,"\nTimeNode1: %d; TimeNode2: %d; Node Time Diff: %d;\n DifBetTX_Node1: %d ; DifBetTX_Node2: %d	",timeNode1,timeNode2, timeNodesDrift,  currentDiff1, currentDiff2);
 		    }else{
 		       	i++;
 		    } 
 		    /* Difference between Transmissions */           
-		    if (currentDiff> maxDif && firstFlag<0 ){
-		    	maxDif = currentDiff;
-	    	}else if(currentDiff < 0 && firstFlag <0){
+		    if (currentDiff1> maxDif && firstFlag<0 ){
+		    	maxDif = currentDiff1;
+	    	}else if(currentDiff1 < 0 && firstFlag <0){
 		    	restartCount++;
 	    		fprintf(fileWrite,"Data Lost!!"); 
 			    firstFlag = 1;
