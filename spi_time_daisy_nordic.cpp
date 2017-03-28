@@ -91,7 +91,7 @@ int main(){
 			error++;
 		}
 	  memset(rxBuf,1,14);	
-     	usleep(200);
+////     	usleep(100);
       firstFlag--;
     }
     delete spi;
