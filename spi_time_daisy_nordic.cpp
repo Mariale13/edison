@@ -63,7 +63,10 @@ int main(){
     	prevTime2 = timeNode2;  
 		gpio->write(0);
 		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
-	    	gpio->write(1);
+	      gpio->write(1);
+	      if (rxBuf[0] == 0xFF && rxBuf[5] == 0xFF ){		//Temporal Added to not include the frames not received
+	      	fprintf(fileWrite,"\nFrame Not Received");
+	      }else{
   		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
    		    timeNode2 = (rxBuf[9]<<24) | (rxBuf[8]<<16) | (rxBuf[7]<<8) |rxBuf[6] ;
         	currentDiff1 = timeNode1-prevTime1;
@@ -88,7 +91,7 @@ int main(){
 	    	if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
 	    		maxNodeDrift = timeNodesDrift; 
 	    	}
-
+		   }
 		}else {
 			error++;
 		}
