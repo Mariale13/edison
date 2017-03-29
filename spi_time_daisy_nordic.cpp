@@ -57,6 +57,7 @@ int main(){
     uint8_t rxBuf[54];
     uint8_t txBuf[4] = {1,2,3,4};
     uint8_t* recv;
+    sleep(1);
         
     while (running == 0) {  
     	prevTime1 = timeNode1;  
@@ -76,7 +77,7 @@ int main(){
 			     j++;
    		  	     fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
    		  	     fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
-		       	 fprintf(fileWrite,"\nTimeNode1: %d; TimeNode2: %d; Node Time Diff: %d;\n DifBetTX_Node1: %d ; DifBetTX_Node2: %d	",timeNode1,timeNode2, timeNodesDrift,  currentDiff1, currentDiff2);
+		       	 fprintf(fileWrite,"\nTimeNode1: %d; TimeNode2: %d; Node Time Diff: %d;\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",timeNode1,timeNode2, timeNodesDrift,  currentDiff1, currentDiff2);
 		    }else{
 		       	i++;
 		    } 
@@ -91,12 +92,13 @@ int main(){
 	    	if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
 	    		maxNodeDrift = timeNodesDrift; 
 	    	}
+		usleep(200);
 		   }
 		}else {
 			error++;
 		}
 	  memset(rxBuf,1,14);	
-////     	usleep(100);
+	//usleep(500);
       firstFlag--;
     }
     delete spi;
