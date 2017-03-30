@@ -36,7 +36,7 @@ int main(){
 	
 	/* GPIO  */
     mraa::Gpio* gpio_cs = new mraa::Gpio(19);
-    mraa::Gpio* gpio_sync = new mraa::Gpio(19);
+    mraa::Gpio* gpio_sync = new mraa::Gpio(20);
     if (gpio_cs == NULL || gpio_sync==NULL) {
         return mraa::ERROR_UNSPECIFIED;
     }
@@ -64,9 +64,9 @@ int main(){
     while (running == 0) {  
     	prevTime1 = timeNode1;  
     	prevTime2 = timeNode2; 
- 		gpio_sync->write(0);	// trigger getData signal
-    	usleep(600);
- 		gpio_sync->write(1);	// trigger getData signal    	
+ 		gpio_sync->write(1);	// trigger getData signal
+    	usleep(500);
+ 		gpio_sync->write(0);	// trigger getData signal    	
 		gpio_cs->write(0);
 		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
 	      gpio_cs->write(1);
@@ -80,14 +80,14 @@ int main(){
         	timeNodesDrift = abs(timeNode2 - timeNode1);
 		    if(time !=0){  
 			     j++;
-   		  	     fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-   		  	     fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
-		       	 fprintf(fileWrite,"\nTimeNode1: %d; TimeNode2: %d; Node Time Diff: %d;\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",timeNode1,timeNode2, timeNodesDrift,  currentDiff1, currentDiff2);
+   		  	    fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+   		  	    // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
+		       	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
 		    }else{
 		       	i++;
 		    } 
 		    /* Difference between Transmissions */           
-		    if (currentDiff1> maxDif && firstFlag<0 ){
+		/*    if (currentDiff1> maxDif && firstFlag<0 ){
 		    	maxDif = currentDiff1;
 	    	}else if(currentDiff1 < 0 && firstFlag <0){
 		    	restartCount++;
@@ -96,7 +96,7 @@ int main(){
 	    	}
 	    	if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
 	    		maxNodeDrift = timeNodesDrift; 
-	    	}
+	    	}*/
 		 }
 		}else {
 			error++;
