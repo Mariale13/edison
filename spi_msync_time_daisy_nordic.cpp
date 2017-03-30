@@ -35,12 +35,14 @@ int main(){
 	}
 	
 	/* GPIO  */
-    mraa::Gpio* gpio = new mraa::Gpio(19);
-    if (gpio == NULL) {
+    mraa::Gpio* gpio_cs = new mraa::Gpio(19);
+    mraa::Gpio* gpio_sync = new mraa::Gpio(19);
+    if (gpio_cs == NULL || gpio_sync==NULL) {
         return mraa::ERROR_UNSPECIFIED;
     }
-    mraa::Result response = gpio->dir(mraa::DIR_OUT);
-    if (response != mraa::SUCCESS) {
+    mraa::Result response = gpio_cs->dir(mraa::DIR_OUT);
+    response = gpio_sync->dir(mraa::DIR_OUT);
+    if (gpio_sync->dir(mraa::DIR_OUT) != mraa::SUCCESS || gpio_cs->dir(mraa::DIR_OUT) !=mraa::SUCCESS) {
         mraa::printError(response);
         return 1;
     }
@@ -61,10 +63,13 @@ int main(){
         
     while (running == 0) {  
     	prevTime1 = timeNode1;  
-    	prevTime2 = timeNode2;  
-		gpio->write(0);
+    	prevTime2 = timeNode2; 
+ 		gpio_sync->write(0);	// trigger getData signal
+    	usleep(600);
+ 		gpio_sync->write(1);	// trigger getData signal    	
+		gpio_cs->write(0);
 		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
-	      gpio->write(1);
+	      gpio_cs->write(1);
 	      if (rxBuf[0] == 0xFF && rxBuf[5] == 0xFF ){		//Temporal Added to not include the frames not received
 	      	fprintf(fileWrite,"\nFrame Not Received");
 	      }else{
@@ -92,17 +97,15 @@ int main(){
 	    	if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
 	    		maxNodeDrift = timeNodesDrift; 
 	    	}
-		   usleep(600);
 		 }
 		}else {
 			error++;
 		}
 	  memset(rxBuf,1,14);	
-	//usleep(500);
       firstFlag--;
     }
     delete spi;
-    delete gpio;
+    delete gpio_cs;
     fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
