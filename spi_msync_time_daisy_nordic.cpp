@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdint.h>
+#include <thread>
 
 #include "mraa.hpp"
 #define fSCLK 8000000  
@@ -12,7 +13,7 @@ int running = 0;
 int i,j=0;
 int maxDif, error,restartCount = 0;
 int timeNode1, timeNode2, prevTime1, prevTime2, timeNodesDrift,  currentDiff1, currentDiff2, maxNodeDrift = 0; 
-
+static volatile bool timerFlag = false;
 
 void
 sig_handler(int signo)
@@ -24,6 +25,26 @@ sig_handler(int signo)
 		running = -1;
     }
 }
+
+/*
+void setInterval(auto function,int interval) {
+    thread th([&]() {
+        while(true) {
+            Sleep(interval);
+            function();
+        }
+    });
+    th.detach();
+}*/
+
+void thread1(){  
+	while(true) {
+	   timerFlag = true; 
+       usleep(1000);
+       printf("\nHey");
+    }
+}  
+  
 
 int main(){
 	FILE * fileWrite;
@@ -55,6 +76,10 @@ int main(){
     spi->mode(mraa::SPI_MODE3);
     spi->lsbmode(0);
     spi->bitPerWord(8);
+    
+    // temporal 
+    std::thread t1(thread1);  
+    //t1.join();  
 
     uint8_t rxBuf[54];
     uint8_t txBuf[4] = {1,2,3,4};
@@ -68,26 +93,26 @@ int main(){
     	usleep(500);
  		gpio_sync->write(0);	// trigger getData signal    	
 		gpio_cs->write(0);
-		if (spi->transfer(NULL, rxBuf,10) == mraa::SUCCESS) {
+		if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
 	      gpio_cs->write(1);
-	      if (rxBuf[0] == 0xFF && rxBuf[5] == 0xFF ){		//Temporal Added to not include the frames not received
+	      if (rxBuf[0] == 0xFF && rxBuf[25] == 0xFF ){		//Temporal Added to not include the frames not received
 	      	fprintf(fileWrite,"\nFrame Not Received");
 	      }else{
   		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
-   		    timeNode2 = (rxBuf[9]<<24) | (rxBuf[8]<<16) | (rxBuf[7]<<8) |rxBuf[6] ;
+   		    timeNode2 = (rxBuf[29]<<24) | (rxBuf[28]<<16) | (rxBuf[27]<<8) |rxBuf[26] ;
         	currentDiff1 = timeNode1-prevTime1;
         	currentDiff2 = timeNode2-prevTime2;
         	timeNodesDrift = abs(timeNode2 - timeNode1);
 		    if(time !=0){  
 			     j++;
    		  	    fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-   		  	    // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
+   		  	     // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
 		       	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
 		    }else{
 		       	i++;
 		    } 
 		    /* Difference between Transmissions */           
-		/*    if (currentDiff1> maxDif && firstFlag<0 ){
+		    /*    if (currentDiff1> maxDif && firstFlag<0 ){
 		    	maxDif = currentDiff1;
 	    	}else if(currentDiff1 < 0 && firstFlag <0){
 		    	restartCount++;
