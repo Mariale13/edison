@@ -68,7 +68,7 @@ int main(){
     // temporal 
     std::thread t1(setInterval);  
 
-    uint8_t rxBuf[54];
+    uint8_t rxBuf[50];
     uint8_t txBuf[4] = {1,2,3,4};
     uint8_t* recv;
     sleep(1);
@@ -79,7 +79,7 @@ int main(){
     		prevTime1 = timeNode1;  
 			prevTime2 = timeNode2; 
 	 		gpio_sync->write(1);	// trigger getData signal
-			usleep(500);
+			usleep(350);			// Time required for each node to get its data
 	 		gpio_sync->write(0);	// trigger getData signal    	
 			gpio_cs->write(0);
 			if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
@@ -94,7 +94,7 @@ int main(){
 		    	timeNodesDrift = abs(timeNode2 - timeNode1);
 				if(timeNode1 !=0){  
 					 j++;
-    	   		  	 fprintf(fileWrite,"\n\nRaw Node1 0x%.2x %.2x %.2x %.2x %.2x",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+    	   		  	 fprintf(fileWrite,"\n\nRaw %.2x %.2x %.2x %.2x %.2x",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
 					 for (int m= 5; m<25 ; m++){
 						fprintf(fileWrite," %.2x", rxBuf[m]);
 					 }
@@ -107,7 +107,7 @@ int main(){
 			}else {		// else transfer not completed
 				error++;
 			}
-		  memset(rxBuf,1,14);	
+		  memset(rxBuf,0,50);	
 		  firstFlag--;
 		}  	//end of IF timerFlag 
     }
