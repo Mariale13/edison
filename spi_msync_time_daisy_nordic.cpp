@@ -41,7 +41,7 @@ void thread1(){
 	while(true) {
 	   timerFlag = true; 
        usleep(1000);
-       printf("\nHey");
+       //printf("\nHey");
     }
 }  
   
@@ -87,47 +87,50 @@ int main(){
     sleep(1);
         
     while (running == 0) {  
-    	prevTime1 = timeNode1;  
-    	prevTime2 = timeNode2; 
- 		gpio_sync->write(1);	// trigger getData signal
-    	usleep(500);
- 		gpio_sync->write(0);	// trigger getData signal    	
-		gpio_cs->write(0);
-		if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
-	      gpio_cs->write(1);
-	      if (rxBuf[0] == 0xFF && rxBuf[25] == 0xFF ){		//Temporal Added to not include the frames not received
-	      	fprintf(fileWrite,"\nFrame Not Received");
-	      }else{
-  		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
-   		    timeNode2 = (rxBuf[29]<<24) | (rxBuf[28]<<16) | (rxBuf[27]<<8) |rxBuf[26] ;
-        	currentDiff1 = timeNode1-prevTime1;
-        	currentDiff2 = timeNode2-prevTime2;
-        	timeNodesDrift = abs(timeNode2 - timeNode1);
-		    if(time !=0){  
-			     j++;
-   		  	    fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-   		  	     // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
-		       	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
-		    }else{
-		       	i++;
-		    } 
-		    /* Difference between Transmissions */           
-		    /*    if (currentDiff1> maxDif && firstFlag<0 ){
-		    	maxDif = currentDiff1;
-	    	}else if(currentDiff1 < 0 && firstFlag <0){
-		    	restartCount++;
-	    		fprintf(fileWrite,"Data Lost!!"); 
-			    firstFlag = 1;
-	    	}
-	    	if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
-	    		maxNodeDrift = timeNodesDrift; 
-	    	}*/
-		 }
-		}else {
-			error++;
-		}
-	  memset(rxBuf,1,14);	
-      firstFlag--;
+ 		if (timerFlag){
+ 			timerFlag = false;
+    		prevTime1 = timeNode1;  
+			prevTime2 = timeNode2; 
+	 		gpio_sync->write(1);	// trigger getData signal
+			usleep(500);
+	 		gpio_sync->write(0);	// trigger getData signal    	
+			gpio_cs->write(0);
+			if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
+			  gpio_cs->write(1);
+			  if (rxBuf[0] == 0xFF && rxBuf[25] == 0xFF ){		//Temporal Added to not include the frames not received
+			  	fprintf(fileWrite,"\nFrame Not Received");
+			  }else{
+	  		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
+	   		    timeNode2 = (rxBuf[29]<<24) | (rxBuf[28]<<16) | (rxBuf[27]<<8) |rxBuf[26] ;
+		    	currentDiff1 = timeNode1-prevTime1;
+		    	currentDiff2 = timeNode2-prevTime2;
+		    	timeNodesDrift = abs(timeNode2 - timeNode1);
+				if(time !=0){  
+					 j++;
+	   		  	    fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+	   		  	     // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
+				   	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
+				}else{
+				   	i++;
+				} 
+				/* Difference between Transmissions */           
+				/*    if (currentDiff1> maxDif && firstFlag<0 ){
+					maxDif = currentDiff1;
+				}else if(currentDiff1 < 0 && firstFlag <0){
+					restartCount++;
+					fprintf(fileWrite,"Data Lost!!"); 
+					firstFlag = 1;
+				}
+				if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
+					maxNodeDrift = timeNodesDrift; 
+				}*/
+			 }
+			}else {		// else transfer not completed
+				error++;
+			}
+		  memset(rxBuf,1,14);	
+		  firstFlag--;
+		}  	//end of timerFlag IF
     }
     delete spi;
     delete gpio_cs;

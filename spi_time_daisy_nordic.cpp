@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdint.h>
-#include <thread.h>
 
 #include "mraa.hpp"
 #define fSCLK 8000000  
@@ -24,16 +23,6 @@ sig_handler(int signo)
 	    printf("\nClosing spi nicely\n");    		     
 		running = -1;
     }
-}
-
-void setInterval(auto function,int interval) {
-    thread th([&]() {
-        while(true) {
-            Sleep(interval);
-            function();
-        }
-    });
-    th.detach();
 }
 
 int main(){
