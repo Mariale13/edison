@@ -27,7 +27,7 @@ sig_handler(int signo)
 }
 
 void setInterval(){  
-	while(true) {
+	while(running == 0){
 	   timerFlag = true; 
        usleep(1000);
     }
@@ -114,9 +114,8 @@ int main(){
     
     delete spi;
     delete gpio_cs;
-   // std::terminate();
-    t1.~thread();
-    printf("\nHEEEY");    
+   	// std::terminate();
+	// t1.~thread();
     fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
