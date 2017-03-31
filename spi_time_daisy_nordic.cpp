@@ -1,4 +1,7 @@
-/* This code is used to test the simple daisy Chain Communication, testing what is being received on both nodes */ 
+/* This code is used to test the simple daisy Chain Communication, testing what is being received on both nodes 
+*  It should receive 10 Bytes: Introduction byte + 4 Bytes of Timer from Node 1 and the same  from Node 2
+*  It prints RawData and also the time 
+*/ 
 
 #include <unistd.h>
 #include <signal.h>

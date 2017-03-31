@@ -1,4 +1,4 @@
-/* This code is used to test the simple daisy Chain Communication, testing what is being received on both nodes */ 
+/* This code is used to test  */ 
 
 #include <unistd.h>
 #include <signal.h>
@@ -26,22 +26,10 @@ sig_handler(int signo)
     }
 }
 
-/*
-void setInterval(auto function,int interval) {
-    thread th([&]() {
-        while(true) {
-            Sleep(interval);
-            function();
-        }
-    });
-    th.detach();
-}*/
-
-void thread1(){  
+void setInterval(){  
 	while(true) {
 	   timerFlag = true; 
        usleep(1000);
-       //printf("\nHey");
     }
 }  
   
@@ -78,8 +66,7 @@ int main(){
     spi->bitPerWord(8);
     
     // temporal 
-    std::thread t1(thread1);  
-    //t1.join();  
+    std::thread t1(setInterval);  
 
     uint8_t rxBuf[54];
     uint8_t txBuf[4] = {1,2,3,4};
@@ -105,40 +92,35 @@ int main(){
 		    	currentDiff1 = timeNode1-prevTime1;
 		    	currentDiff2 = timeNode2-prevTime2;
 		    	timeNodesDrift = abs(timeNode2 - timeNode1);
-				if(time !=0){  
+				if(timeNode1 !=0){  
 					 j++;
-	   		  	    fprintf(fileWrite,"\n\nRaw Node1 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+    	   		  	 fprintf(fileWrite,"\n\nRaw Node1 0x%.2x %.2x %.2x %.2x %.2x",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
+					 for (int m= 5; m<25 ; m++){
+						printf(" %.2x", rxBuf[m]);
+					 }
 	   		  	     // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
 				   	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
 				}else{
 				   	i++;
 				} 
-				/* Difference between Transmissions */           
-				/*    if (currentDiff1> maxDif && firstFlag<0 ){
-					maxDif = currentDiff1;
-				}else if(currentDiff1 < 0 && firstFlag <0){
-					restartCount++;
-					fprintf(fileWrite,"Data Lost!!"); 
-					firstFlag = 1;
-				}
-				if(timeNodesDrift > maxNodeDrift && firstFlag<0 ){
-					maxNodeDrift = timeNodesDrift; 
-				}*/
 			 }
 			}else {		// else transfer not completed
 				error++;
 			}
 		  memset(rxBuf,1,14);	
 		  firstFlag--;
-		}  	//end of timerFlag IF
+		}  	//end of IF timerFlag 
     }
+    
     delete spi;
     delete gpio_cs;
+   // std::terminate();
+    t1.~thread();
     fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
     fprintf(fileWrite,"\nClosing spi nicely\n");    
     fclose(fileWrite);
-    //! [Interesting]
+    printf("\nHEEEY");
     return mraa::SUCCESS;
 }
