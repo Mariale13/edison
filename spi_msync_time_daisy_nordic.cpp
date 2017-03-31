@@ -96,7 +96,7 @@ int main(){
 					 j++;
     	   		  	 fprintf(fileWrite,"\n\nRaw Node1 0x%.2x %.2x %.2x %.2x %.2x",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
 					 for (int m= 5; m<25 ; m++){
-						printf(" %.2x", rxBuf[m]);
+						fprintf(fileWrite," %.2x", rxBuf[m]);
 					 }
 	   		  	     // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
 				   	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
@@ -116,11 +116,12 @@ int main(){
     delete gpio_cs;
    // std::terminate();
     t1.~thread();
+    printf("\nHEEEY");    
     fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
     fprintf(fileWrite,"\nClosing spi nicely\n");    
     fclose(fileWrite);
-    printf("\nHEEEY");
+
     return mraa::SUCCESS;
 }
