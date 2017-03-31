@@ -29,7 +29,7 @@ sig_handler(int signo)
 void setInterval(){  		// Manual implementation of setInterval Functionality 
 	while(running == 0){
 	   timerFlag = true; 
-       usleep(1000);
+       usleep(950);
     }
 }  
   
@@ -79,7 +79,7 @@ int main(){
     		prevTime1 = timeNode1;  
 			prevTime2 = timeNode2; 
 	 		gpio_sync->write(1);	// trigger getData signal
-			usleep(300);			// Time required for each node to get its data
+			usleep(400);			// Time required for each node to get its data
 	 		gpio_sync->write(0);	// trigger getData signal    	
 			gpio_cs->write(0);
 			if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {

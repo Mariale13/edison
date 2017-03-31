@@ -29,7 +29,7 @@ sig_handler(int signo)
 void setInterval(){  		// Manual implementation of setInterval Functionality 
 	while(running == 0){
 	   timerFlag = true; 
-       usleep(1000);
+       usleep(950);
     }
 }  
   
