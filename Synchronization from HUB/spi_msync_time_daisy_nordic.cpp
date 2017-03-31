@@ -1,4 +1,7 @@
-/* This code is used to test  */ 
+/* 					Mode Synchronization from HUB
+ * This code is used to print the first 25 bytes received through SPI
+ *  It calculates the time difference between the nodes and prints it
+ */ 
 
 #include <unistd.h>
 #include <signal.h>
@@ -71,7 +74,7 @@ int main(){
     uint8_t rxBuf[50];
     uint8_t txBuf[4] = {1,2,3,4};
     uint8_t* recv;
-    sleep(1);
+	printf("\nMode Synchronization from HUB\n");
         
     while (running == 0) {  
  		if (timerFlag){
@@ -114,13 +117,12 @@ int main(){
     
     delete spi;
     delete gpio_cs;
-   	// std::terminate();
-	// t1.~thread();
     fseek (fileWrite, 0, SEEK_SET);     
     fprintf(fileWrite,"\n MaxDifference Between Transmissions = %d \n Received_OK= %d \n error = %d \n Total Lost %d\n Nr DataLost %d\n", maxDif, j, error, i,restartCount);
     fprintf(fileWrite,"\nMax Drifting between Noded = %d", maxNodeDrift);
     fprintf(fileWrite,"\nClosing spi nicely\n");    
     fclose(fileWrite);
-
+   	// std::terminate();
+	// t1.~thread();
     return mraa::SUCCESS;
 }

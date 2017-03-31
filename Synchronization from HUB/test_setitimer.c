@@ -1,4 +1,6 @@
-/* This code is used to test  */ 
+/* 					Modo Synchronization from HUB
+ * This code is used to calculate the time difference from Node 1  
+ */ 
 
 #include <unistd.h>
 #include <signal.h>
@@ -26,7 +28,7 @@ sig_handler(int signo)
     }
 }
 
-void setInterval(){  		// Manual implementation of setInterval Functionality 
+void setInterval(){  		// Manual implementation of setInterval Function 
 	while(running == 0){
 	   timerFlag = true; 
        usleep(950);
@@ -42,7 +44,7 @@ int main(){
 		printf("File not Opened");
 		return 0;
 	}
-	
+		
 	/* GPIO  */
     mraa::Gpio* gpio_cs = new mraa::Gpio(19);
     mraa::Gpio* gpio_sync = new mraa::Gpio(20);
@@ -71,15 +73,14 @@ int main(){
     uint8_t rxBuf[50];
     uint8_t txBuf[4] = {1,2,3,4};
     uint8_t* recv;
-    sleep(1);
+    printf("\nSynchronization from HUB\n");
         
     while (running == 0) {  
  		if (timerFlag){
  			timerFlag = false;
     		prevTime1 = timeNode1;  
-		//	prevTime2 = timeNode2; 
 	 		gpio_sync->write(1);	// trigger getData signal
-			usleep(300);			// Time required for each node to get its data
+			usleep(400);			// Time required for each node to get its data
 	 		gpio_sync->write(0);	// trigger getData signal    	
 			gpio_cs->write(0);
 			if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
@@ -88,17 +89,9 @@ int main(){
 			  	fprintf(fileWrite,"\nFrame Not Received");
 			  }else{
 	  		    timeNode1 = (rxBuf[4]<<24) | (rxBuf[3]<<16) | (rxBuf[2]<<8) |rxBuf[1] ;
-	   		   // timeNode2 = (rxBuf[29]<<24) | (rxBuf[28]<<16) | (rxBuf[27]<<8) |rxBuf[26] ;
 		    	currentDiff1 = timeNode1-prevTime1;
-		    	//currentDiff2 = timeNode2-prevTime2;
-		    //	timeNodesDrift = abs(timeNode2 - timeNode1);
 				if(timeNode1 !=0){  
 					 j++;
-    	   		  	// fprintf(fileWrite,"\n\nRaw %.2x %.2x %.2x %.2x %.2x",rxBuf[4],rxBuf[3],rxBuf[2],rxBuf[1],rxBuf[0]);
-					/* for (int m= 5; m<25 ; m++){
-						fprintf(fileWrite," %.2x", rxBuf[m]);
-					 }*/
-	   		  	     // fprintf(fileWrite,"\nRaw Node2 0x%.2x%.2x%.2x%.2x%.2x ",rxBuf[9],rxBuf[8],rxBuf[7],rxBuf[6],rxBuf[5]);
 				   	 fprintf(fileWrite,"\nDifBetTX_Node1: %d ; DifBetTX_Node2: %d	\n",  currentDiff1, currentDiff2);
 				}else{
 				   	i++;
@@ -108,8 +101,7 @@ int main(){
 				error++;
 			}
 		  memset(rxBuf,0,50);	
-		  //firstFlag--;
-		}  	//end of IF timerFlag 
+		} //end of IF timerFlag 
     }
     
     delete spi;
