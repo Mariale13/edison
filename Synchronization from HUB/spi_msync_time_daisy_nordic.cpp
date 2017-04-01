@@ -32,7 +32,7 @@ sig_handler(int signo)
 void setInterval(){  		// Manual implementation of setInterval Functionality 
 	while(running == 0){
 	   timerFlag = true; 
-       usleep(950);
+       usleep(980);
     }
 }  
   
@@ -81,12 +81,12 @@ int main(){
  			timerFlag = false;
     		prevTime1 = timeNode1;  
 			prevTime2 = timeNode2; 
-	 		gpio_sync->write(1);	// trigger getData signal
-			usleep(400);			// Time required for each node to get its data
-	 		gpio_sync->write(0);	// trigger getData signal    	
+     		gpio_cs->write(1);			
+//	 		gpio_sync->write(1);	// trigger getData signal
+			usleep(300);			// Time required for each node to get its data
+//	 		gpio_sync->write(0);	// trigger getData signal    	
 			gpio_cs->write(0);
 			if (spi->transfer(NULL, rxBuf,50) == mraa::SUCCESS) {
-			  gpio_cs->write(1);
 			  if (rxBuf[0] == 0xFF && rxBuf[25] == 0xFF ){		//Temporal Added to not include the frames not received
 			  	fprintf(fileWrite,"\nFrame Not Received");
 			  }else{
